@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argoapp-sysdig-secure
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: ''
+    namespace: sysdig-secure
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: k8s-sysdig-secure/dev/
+    repoURL: 'https://gitlab.com/hireright/hrgp/applications/foundation/k8s-services.git'
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  project: prj-d-hrgp-foundation
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
